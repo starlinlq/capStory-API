@@ -8,7 +8,7 @@ class UserController {
   async signup({ request, auth, response }) {
     try {
       // save user to database
-      const userData = request.only(["email", "password"]);
+      const userData = request.only(["email", "password", "username"]);
       // console.log("try", userData)
       const user = await User.create(userData);
 
@@ -30,6 +30,7 @@ class UserController {
         user: {
           id: user.id,
           email: user.email,
+          username: user.username,
         },
         token: jwt.token,
         status: "success",
@@ -44,11 +45,41 @@ class UserController {
     }
   }
 
+  async validate({ auth, response, request }) {
+    try {
+      let valid = await auth.check();
+      if (valid) {
+        let user = await auth.getUser();
+        return response.status(200).json({
+          status: "success",
+          user: {
+            username: user.username,
+            id: user.id,
+            bio: user.bio,
+            interest: user.interest,
+            location: user.location,
+            photoUrl: user.photurl,
+          },
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   async login({ request, response, auth }) {
     try {
-      let params = request.all();
-      let user = await auth.attempt(params.email, params.password);
-      console.log(user);
+      let { email, password } = request.all();
+      let user = await auth.attempt(email, password);
+
+      //get posts data and profile
+      //const users = await User.query().with("posts").with("profile").fetch();
+
+      //get posts data
+      /* const users = await User.query().with("posts").fetch(); */
+      // serialize the data
+      // data users.toJSON()
+
       console.log("userlogin data", user);
       // generate JWT token for user
       // const jwt = await auth.generate(user)
@@ -64,11 +95,11 @@ class UserController {
       );
       try {
         const loggedInUser = await User.query()
-          .where("email", "=", params.email)
+          .where("email", "=", email)
           .first();
         console.log(loggedInUser.id);
         return response.status(200).json({
-          user: { id: loggedInUser.id },
+          user: { id: loggedInUser.id, username: loggedInUser.username },
           token: user.token,
           status: "success",
         });

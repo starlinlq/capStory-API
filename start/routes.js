@@ -1,4 +1,4 @@
-'use strict'
+"use strict";
 
 /*
 |--------------------------------------------------------------------------
@@ -14,8 +14,36 @@
 */
 
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
-const Route = use('Route')
+const Route = use("Route");
 
-Route.get('/', () => {
-  return { greeting: 'Hello world in JSON' }
+Route.get("/", () => {
+  return { greeting: "Hello world in JSON" };
+});
+
+//register & login
+Route.group(() => {
+  Route.post("signup", "UserController.signup");
+  Route.post("login", "UserController.login");
+  Route.get("validate", "UserController.validate");
+}).prefix("api");
+
+Route.group(() => {
+  Route.get("/:id", async ({ request, auth }) => {
+    try {
+      const loggedInUser = await auth.getUser();
+      return {
+        id: loggedInUser.id,
+        email: loggedInUser.email,
+      };
+    } catch (error) {
+      // console.log(
+      //   'Error', error
+      // )
+      return response.status(401).send("Login First");
+    }
+  });
+  //subscription route
+  // Route.post("/subscription", "SubscriptionController.subscribe");
 })
+  .prefix("api/user")
+  .middleware("auth:jwt");
