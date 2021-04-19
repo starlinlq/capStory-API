@@ -4,7 +4,7 @@
 const Model = use("Model");
 
 class Profile extends Model {
-  user() {
+  profile() {
     return this.belongsTo("App/Models/User");
   }
 }

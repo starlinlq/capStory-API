@@ -7,6 +7,7 @@ class ProfileSchema extends Schema {
   up() {
     this.create("profiles", (table) => {
       table.increments();
+      table.integer('user_id').unsigned();
       table.string("bio", 300).notNullable();
       table.string("location", 80).notNullable();
       table.string("interest", 100).notNullable();

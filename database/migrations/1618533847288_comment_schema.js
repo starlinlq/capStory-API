@@ -1,19 +1,20 @@
-'use strict'
+"use strict";
 
 /** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use('Schema')
+const Schema = use("Schema");
 
 class CommentSchema extends Schema {
-  up () {
-    this.create('comments', (table) => {
-      table.increments()
-      table.timestamps()
-    })
+  up() {
+    this.create("comments", (table) => {
+      table.text("comment", "longtext").notNullable();
+      table.increments();
+      table.timestamps();
+    });
   }
 
-  down () {
-    this.drop('comments')
+  down() {
+    this.drop("comments");
   }
 }
 
-module.exports = CommentSchema
+module.exports = CommentSchema;

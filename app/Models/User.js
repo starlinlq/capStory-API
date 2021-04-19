@@ -11,8 +11,11 @@ class User extends Model {
     return this.hasOne("App/Models/Profile");
   }
 
-  post() {
+  posts() {
     return this.hasMany("App/Models/Post");
+  }
+  comment() {
+    return this.hasMany("App/Models/Comment");
   }
 
   static boot() {

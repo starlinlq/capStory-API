@@ -1,6 +1,7 @@
 "use strict";
 
 const User = use("App/Models/User");
+const Profile = use("App/Models/Profile");
 
 const cookie = require("cookie");
 
@@ -11,12 +12,13 @@ class UserController {
       const userData = request.only(["email", "password", "username"]);
       // console.log("try", userData)
       const user = await User.create(userData);
-
-      console.log("await User create");
+      await user.profile().create({ bio: "", interest: "", location: "", photourl: "" });
+     
+      
       // generate JWT token for user
       const jwt = await auth.generate(user);
-      console.log("token", jwt);
-      response.header(
+
+      /*  response.header(
         "Set-Cookie",
         cookie.serialize("bvf", jwt.token, {
           httpOnly: false,
@@ -25,7 +27,7 @@ class UserController {
           maxAge: 3600,
           path: "/",
         })
-      );
+      ); */
       return response.status(200).json({
         user: {
           id: user.id,
@@ -48,10 +50,13 @@ class UserController {
   async validate({ auth, response, request }) {
     try {
       let valid = await auth.check();
+          
+
       if (valid) {
         let user = await auth.getUser();
         return response.status(200).json({
           status: "success",
+          info: userData,
           user: {
             username: user.username,
             id: user.id,
@@ -73,7 +78,8 @@ class UserController {
       let user = await auth.attempt(email, password);
 
       //get posts data and profile
-      //const users = await User.query().with("posts").with("profile").fetch();
+     const userData = await User.query().where("email", "=", email).with("posts").with("profile").fetch();
+     console.log(userData)
 
       //get posts data
       /* const users = await User.query().with("posts").fetch(); */

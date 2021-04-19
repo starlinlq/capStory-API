@@ -28,6 +28,12 @@ Route.group(() => {
 }).prefix("api");
 
 Route.group(() => {
+  Route.post("create", "PostController.create");
+})
+  .prefix("api/user/post")
+  .middleware("auth:jwt");
+
+Route.group(() => {
   Route.get("/:id", async ({ request, auth }) => {
     try {
       const loggedInUser = await auth.getUser();
