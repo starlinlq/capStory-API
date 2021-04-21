@@ -7,10 +7,10 @@ class PostSchema extends Schema {
   up() {
     this.create("posts", (table) => {
       table.increments();
+      table.integer("user_id").unsigned().references("id").inTable("users");
       table.string("author", 100).notNullable();
       table.string("title", 100).notNullable();
-      table.string("topic", 100).notNullable();
-      table.string("photourl", 255).notNullable();
+      table.string("image", 255).notNullable();
       table.text("story", "longtext").notNullable();
       table.timestamps();
     });

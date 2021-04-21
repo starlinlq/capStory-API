@@ -6,8 +6,8 @@ const Schema = use("Schema");
 class TopicSchema extends Schema {
   up() {
     this.create("topics", (table) => {
-      table.string("nature", 100).notNullable().unique();
-      table.string("universe", 100).notNullable().unique();
+      table.integer("post_id").unsigned().references("id").inTable("posts");
+      table.string("topic", 100).notNullable();
       table.increments();
       table.timestamps();
     });

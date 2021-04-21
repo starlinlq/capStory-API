@@ -14,6 +14,9 @@ class Post extends Model {
   topic() {
     return this.hasOne("App/Models/Topic");
   }
+  like() {
+    return this.hasOne("App/Models/PostLike");
+  }
 }
 
 module.exports = Post;

@@ -24,32 +24,13 @@ Route.get("/", () => {
 Route.group(() => {
   Route.post("signup", "UserController.signup");
   Route.post("login", "UserController.login");
-  Route.get("validate", "UserController.validate");
 }).prefix("api");
 
 Route.group(() => {
   Route.post("create", "PostController.create");
-})
-  .prefix("api/user/post")
-  .middleware("auth:jwt");
-
-Route.group(() => {
-  Route.get("/:id", async ({ request, auth }) => {
-    try {
-      const loggedInUser = await auth.getUser();
-      return {
-        id: loggedInUser.id,
-        email: loggedInUser.email,
-      };
-    } catch (error) {
-      // console.log(
-      //   'Error', error
-      // )
-      return response.status(401).send("Login First");
-    }
-  });
-  //subscription route
-  // Route.post("/subscription", "SubscriptionController.subscribe");
+  Route.get("profile", "ProfileController.index");
+  Route.put("profile/", "ProfileController.update");
+  Route.get("validate", "UserController.validate");
 })
   .prefix("api/user")
   .middleware("auth:jwt");

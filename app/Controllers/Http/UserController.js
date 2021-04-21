@@ -9,12 +9,13 @@ class UserController {
   async signup({ request, auth, response }) {
     try {
       // save user to database
-      const userData = request.only(["email", "password", "username"]);
+      const userData = request.only(["email", "password"]);
       // console.log("try", userData)
       const user = await User.create(userData);
-      await user.profile().create({ bio: "", interest: "", location: "", photourl: "" });
-     
-      
+      await user
+        .profile()
+        .create({ bio: "", interest: "", location: "", photourl: "" });
+
       // generate JWT token for user
       const jwt = await auth.generate(user);
 
@@ -50,25 +51,23 @@ class UserController {
   async validate({ auth, response, request }) {
     try {
       let valid = await auth.check();
-          
 
       if (valid) {
         let user = await auth.getUser();
+        let data = await user.profile().fetch();
+        let profile = data.toJSON();
+
         return response.status(200).json({
           status: "success",
-          info: userData,
           user: {
-            username: user.username,
             id: user.id,
-            bio: user.bio,
-            interest: user.interest,
-            location: user.location,
-            photoUrl: user.photurl,
+            profile,
           },
         });
       }
     } catch (err) {
       console.log(err);
+      response.status(400).json({ message: { error: err.response } });
     }
   }
 
@@ -78,8 +77,12 @@ class UserController {
       let user = await auth.attempt(email, password);
 
       //get posts data and profile
-     const userData = await User.query().where("email", "=", email).with("posts").with("profile").fetch();
-     console.log(userData)
+      const userData = await User.query()
+        .where("email", "=", email)
+        .with("posts")
+        .with("profile")
+        .fetch();
+      console.log(userData);
 
       //get posts data
       /* const users = await User.query().with("posts").fetch(); */
