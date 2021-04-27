@@ -12,7 +12,7 @@ class ProfileSchema extends Schema {
       table.string("name").notNullable();
       table.string("location", 80).notNullable();
       table.string("interest", 100).notNullable();
-      table.string("photourl", 100).notNullable();
+      table.string("photourl", 400).notNullable();
       table.timestamps();
     });
   }

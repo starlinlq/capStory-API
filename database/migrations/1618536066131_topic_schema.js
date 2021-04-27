@@ -7,7 +7,7 @@ class TopicSchema extends Schema {
   up() {
     this.create("topics", (table) => {
       table.integer("post_id").unsigned().references("id").inTable("posts");
-      table.string("topic", 100).notNullable();
+      table.string("title", 100).notNullable();
       table.increments();
       table.timestamps();
     });

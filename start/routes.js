@@ -27,10 +27,20 @@ Route.group(() => {
 }).prefix("api");
 
 Route.group(() => {
-  Route.post("create", "PostController.create");
-  Route.get("profile", "ProfileController.index");
-  Route.put("profile/", "ProfileController.update");
+  Route.get(":id", "PostController.single");
+}).prefix("api/post");
+
+Route.group(() => {
+  Route.get("profile/:id", "ProfileController.index");
+  Route.put("profile/update", "ProfileController.update");
   Route.get("validate", "UserController.validate");
 })
   .prefix("api/user")
+  .middleware("auth:jwt");
+
+Route.group(() => {
+  Route.post("create", "PostController.create");
+  Route.get("", "PostController.index");
+})
+  .prefix("api/user/post")
   .middleware("auth:jwt");

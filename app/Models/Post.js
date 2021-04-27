@@ -15,7 +15,7 @@ class Post extends Model {
     return this.hasOne("App/Models/Topic");
   }
   like() {
-    return this.hasOne("App/Models/PostLike");
+    return this.hasMany("App/Models/PostLike");
   }
 }
 
