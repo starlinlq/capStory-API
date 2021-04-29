@@ -2,8 +2,9 @@
 const User = use("App/Models/User");
 const Post = use("App/Models/Post");
 const Topic = use("App/Models/Topic");
+const Database = use("Database");
 class PostController {
-  async index(request, response, auth) {
+  async index({ request, response, auth }) {
     const { id } = request.all();
     try {
       if (id) {
@@ -12,18 +13,29 @@ class PostController {
         return response.status(200).send({ testing: posts });
       }
     } catch (error) {
-      response.status(400).send({ message: error.message });
+      return response.status(400).send({ message: error.message });
+    }
+  }
+
+  async show({ request, response, auth }) {
+    try {
+      const posts = await Database.table("posts").limit(8);
+
+      return response.status(200).json({ posts });
+    } catch (error) {
+      console.log(error);
     }
   }
 
   async single({ request, response, params }) {
     let id = params.id;
-    console.log(id);
+
     try {
-      let post = await Post.find(id);
+      let post = await Post.query().where("id", id).with("comment").fetch();
       return response.status(200).json({ post });
     } catch (error) {
-      response.status(400).send({ message: error.message });
+      console.log(error);
+      return response.status(400).send({ message: error.message });
     }
   }
 
@@ -32,6 +44,7 @@ class PostController {
 
     try {
       const valid = await auth.check();
+      console.log(image);
       if (valid) {
         let user = await auth.getUser();
         await user.posts().create({ title, story, author, image });
@@ -46,7 +59,7 @@ class PostController {
         return response.status(200).json({ ok: "done" });
       }
     } catch (error) {
-      response.status(400).send({ message: error });
+      return response.status(400).send({ message: error });
     }
   }
 }

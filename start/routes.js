@@ -1,5 +1,7 @@
 "use strict";
 
+const { route } = require("@adonisjs/framework/src/Route/Manager");
+
 /*
 |--------------------------------------------------------------------------
 | Routes
@@ -16,9 +18,7 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use("Route");
 
-Route.get("/", () => {
-  return { greeting: "Hello world in JSON" };
-});
+Route.get("/", "PostController.show");
 
 //register & login
 Route.group(() => {
@@ -28,12 +28,14 @@ Route.group(() => {
 
 Route.group(() => {
   Route.get(":id", "PostController.single");
+  Route.get(":id/comment", "CommentController.show");
 }).prefix("api/post");
 
 Route.group(() => {
   Route.get("profile/:id", "ProfileController.index");
   Route.put("profile/update", "ProfileController.update");
   Route.get("validate", "UserController.validate");
+  Route.get("bookmark", "BookmarkController.show");
 })
   .prefix("api/user")
   .middleware("auth:jwt");
@@ -41,6 +43,11 @@ Route.group(() => {
 Route.group(() => {
   Route.post("create", "PostController.create");
   Route.get("", "PostController.index");
+  Route.post(":id/comment", "CommentController.store");
+  Route.delete("comment/:id", "CommentController.destroy");
+  Route.post(":id/bookmark", "BookmarkController.store");
+  Route.get(":id/bookmark/validate", "BookmarkController.validate");
+  Route.delete(":id/bookmark", "BookmarkController.destroy");
 })
-  .prefix("api/user/post")
+  .prefix("api/post")
   .middleware("auth:jwt");

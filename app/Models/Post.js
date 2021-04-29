@@ -7,10 +7,12 @@ class Post extends Model {
   user() {
     return this.belongsTo("App/Models/User");
   }
-  comments() {
+  comment() {
     return this.hasMany("App/Models/Comment");
   }
-
+  /*   bookmark() {
+    return this.belongsToMany("App/models/Bookmark");
+  } */
   topic() {
     return this.hasOne("App/Models/Topic");
   }

@@ -9,12 +9,16 @@ class UserController {
   async signup({ request, auth, response }) {
     try {
       // save user to database
-      const userData = request.only(["email", "password"]);
-      // console.log("try", userData)
+      const { email, password, username } = request.all();
+      let userData = { email, password };
       const user = await User.create(userData);
-      await user
-        .profile()
-        .create({ bio: "", interest: "", location: "", photourl: "" });
+      await user.profile().create({
+        name: username,
+        bio: "",
+        interest: "",
+        location: "",
+        photourl: "https://i.redd.it/v7h9zrkm4vi41.jpg",
+      });
 
       // generate JWT token for user
       const jwt = await auth.generate(user);

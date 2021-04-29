@@ -11,6 +11,10 @@ class User extends Model {
     return this.hasOne("App/Models/Profile");
   }
 
+  bookmark() {
+    return this.hasMany("App/models/Bookmark");
+  }
+
   posts() {
     return this.hasMany("App/Models/Post");
   }
